@@ -50,7 +50,7 @@ pipeline {
                 
             }
         }
-        stage('Deploy Dev') {
+        stage('Deploy PRD') {
             steps {
                 echo 'Stage Deploy dev'
                 sh ("sed -i -- 's/REGISTRY/$REGISTRY/g' docker-compose.yml")
@@ -58,15 +58,16 @@ pipeline {
                 sh ("sed -i -- 's/IMAGENAME/$IMAGENAME/g' docker-compose.yml")
                 sh ("sed -i -- 's/TAG/$BUILD_NUMBER/g' docker-compose.yml")
                 sshagent(['ssh-ec2']){
-                 sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEDEV}:/home/ec2-user' 
-                 sh 'ssh ${EC2INSTANCEDEV} ls -lrt'
-                 sh 'ssh ${EC2INSTANCEDEV} docker-compose up -d'
+                 sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEPRD}:/home/ec2-user' 
+                 sh 'ssh ${EC2INSTANCEPRD} ls -lrt'
+                 sh 'ssh ${EC2INSTANCEPRD} docker-compose up -d'
                 }
             }
         }
         stage('Notification') {
             steps {
                 echo 'Stage Notify'
+                echo 'El mejor Team, el GRUPO1'
             }
         }
     }
