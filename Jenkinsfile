@@ -9,17 +9,30 @@ pipeline {
         DOCKER_HUB_LOGIN = credentials('docker-grupo1')
         IMAGENAME = 'hello-bootcamp'
     }
-
     stages {
         stage('Init') {
+            agent{
+                docker {
+                    image 'node:erbium-alpine'
+                    args '-u root:root'
+                }
+            }
             steps {
-                echo 'Stage Init'
+                echo "Init"
+                sh 'npm install'
             }
         }
         stage('Test') {
+            agent{
+                docker {
+                    image 'node:erbium-alpine'
+                    args '-u root:root'
+                }
+            }
             steps {
-                echo 'Stage Test'
-                echo 'tst'
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+                sh 'npm run test'
+                }
             }
         }
         stage('Build') {
