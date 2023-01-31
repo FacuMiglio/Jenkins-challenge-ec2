@@ -1,10 +1,13 @@
 pipeline {
     agent any
     environment {
-        EC2INSTANCE = 'ec2-user@44.199.211.39'
-        APPNAME = 'python-app-demo'
-        REGISTRY = 'roxsross12'
-        DOCKER_HUB_LOGIN = credentials('docker-hub')
+        EC2INSTANCEDEV = 'ec2-user@44.201.56.64'
+        EC2INSTANCETST = 'ec2-user@44.203.20.13'
+        EC2INSTANCEPRD = 'ec2-user@34.201.35.162'
+        APPNAME = 'hello-bootcamp-app'
+        REGISTRY = 'facumiglio'
+        DOCKER_HUB_LOGIN = credentials('docker-grupo1')
+        IMAGENAME = 'hello-bootcamp'
     }
 
     stages {
@@ -33,12 +36,17 @@ pipeline {
                 
             }
         }
-        stage('Deploy') {
+        stage('Deploy Dev') {
             steps {
-                echo 'Stage Deploy'
-                sh 'touch prueba.txt'
+                echo 'Stage Deploy dev'
+                sh ("sed -i -- 's/REGISTRY/$REGISTRY/g' docker-compose.yml")
+                sh ("sed -i -- 's/APPNAME/$APPNAME/g' docker-compose.yml")
+                sh ("sed -i -- 's/TAG/$BUILD_NUMBER/g' docker-compose.yml")
+                sh ("sed -i -- 's/IMAGENAME/$IMAGENAME/g' docker-compose.yml")
                 sshagent(['ssh-ec2']){
-                 sh 'scp -o StrictHostKeyChecking=no prueba.txt ${EC2INSTANCE}:/home/ec2-user' 
+                sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEDEV}:/home/ec2-user' 
+                sh 'ssh ${EC2INSTANCEDEV} ls -lrt'
+                sh 'ssh ${EC2INSTANCEDEV} docker-compose up -d'
                 }
             }
         }

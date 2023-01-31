@@ -4,5 +4,5 @@ services:
     container_name: IMAGENAME
     image: REGISTRY/APPNAME:TAG
     ports:
-      - "4000:4000"
+      - "4001:4000"
     restart: always
