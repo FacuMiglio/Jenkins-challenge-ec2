@@ -6,7 +6,7 @@ pipeline {
         EC2INSTANCEPRD = 'ec2-user@34.201.35.162'
         APPNAME = 'hello-bootcamp-app'
         REGISTRY = 'facumiglio'
-        DOCKER_HUB_LOGIN = credentials('docker-grupo-1')
+        DOCKER_HUB_LOGIN = credentials('docker-grupo1')
         IMAGENAME = 'hello-bootcamp'
     }
 
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 echo 'Stage Push'
                 sh 'docker login --username=$DOCKER_HUB_LOGIN_USR --password=$DOCKER_HUB_LOGIN_PSW'
-                sh 'docker push ${REGISTRY}/${APP_NAME}:${BUILD_NUMBER}'
+                sh 'docker push ${REGISTRY}/${APPNAME}:${BUILD_NUMBER}'
                 
             }
         }
@@ -44,9 +44,9 @@ pipeline {
                 sh ("sed -i -- 's/IMAGENAME/$IMAGENAME/g' docker-compose.yml")
                 sh ("sed -i -- 's/TAG/$BUILD_NUMBER/g' docker-compose.yml")
                 sshagent(['ssh-ec2']){
-                sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEDEV}:/home/ec2-user' 
-                sh 'ssh ${EC2INSTANCEDEV} ls -lrt'
-                sh 'ssh ${EC2INSTANCEDEV} docker-compose up -d'
+                 sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEDEV}:/home/ec2-user' 
+                 sh 'ssh ${EC2INSTANCEDEV} ls -lrt'
+                 sh 'ssh ${EC2INSTANCEDEV} docker-compose up -d'
                 }
             }
         }
