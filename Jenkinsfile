@@ -6,7 +6,7 @@ pipeline {
         EC2INSTANCEPRD = 'ec2-user@34.201.35.162'
         APPNAME = 'hello-bootcamp-app'
         REGISTRY = 'facumiglio'
-        DOCKER_HUB_LOGIN = credentials('docker-grupo1')
+        DOCKER_HUB_LOGIN = credentials('docker-grupo-1')
         IMAGENAME = 'hello-bootcamp'
     }
 
@@ -41,8 +41,8 @@ pipeline {
                 echo 'Stage Deploy dev'
                 sh ("sed -i -- 's/REGISTRY/$REGISTRY/g' docker-compose.yml")
                 sh ("sed -i -- 's/APPNAME/$APPNAME/g' docker-compose.yml")
-                sh ("sed -i -- 's/TAG/$BUILD_NUMBER/g' docker-compose.yml")
                 sh ("sed -i -- 's/IMAGENAME/$IMAGENAME/g' docker-compose.yml")
+                sh ("sed -i -- 's/TAG/$BUILD_NUMBER/g' docker-compose.yml")
                 sshagent(['ssh-ec2']){
                 sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ${EC2INSTANCEDEV}:/home/ec2-user' 
                 sh 'ssh ${EC2INSTANCEDEV} ls -lrt'
