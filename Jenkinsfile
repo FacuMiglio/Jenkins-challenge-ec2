@@ -52,7 +52,7 @@ pipeline {
         }
         stage('Deploy Prd') {
             steps {
-                echo 'Stage Deploy Prd'
+                echo 'Stage Deploy Prd (ahora sí)'
                 sh ("sed -i -- 's/REGISTRY/$REGISTRY/g' docker-compose.yml")
                 sh ("sed -i -- 's/APPNAME/$APPNAME/g' docker-compose.yml")
                 sh ("sed -i -- 's/IMAGENAME/$IMAGENAME/g' docker-compose.yml")
